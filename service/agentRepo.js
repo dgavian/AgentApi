@@ -16,6 +16,12 @@ const AgentRepo = function () {
 
         return agents;
     };
+
+    this.addAgent = async function (newAgent) {
+        const agents = await this.getAllAgents();
+        agents.push(newAgent);
+        await fs.writeFile(agentsPath, JSON.stringify(agents, null, 4));
+    };
 };
 
 exports.AgentRepo = AgentRepo;
