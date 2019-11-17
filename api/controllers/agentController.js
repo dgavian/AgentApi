@@ -5,6 +5,7 @@ const serviceFactory = require('../../service/serviceFactory').ServiceFactory,
     AgentRepo = ServiceFactory.makeAgentRepo();
 
 exports.getAllAgents = function (req, res) {
-    const agents = AgentRepo.getAllAgents();
-    res.json(agents);
+    AgentRepo.getAllAgents()
+        .then(agents => res.json(agents));
+        //.catch(error => );
 };
