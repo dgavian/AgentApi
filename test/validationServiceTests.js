@@ -69,20 +69,20 @@ function makeValidAgent() {
 };
 
 function makeAgentWithMissingName() {
-let result = makeValidAgent();
-result.name = null;
-return result;
+    let result = makeValidAgent();
+    result.name = null;
+    return result;
 };
 
 function makeAgentWithInvalidId() {
     let result = makeValidAgent();
     result._id = 'Foo';
     return result;
-    };
+};
 
-    function makeAgentWithNoPhone() {
-        let result = makeValidAgent();
-        result.phone.primary = null;
-        result.phone.mobile = null;
-        return result;
-        };
+function makeAgentWithNoPhone() {
+    let result = makeValidAgent();
+    result.phone.primary = null;
+    result.phone.mobile = null;
+    return result;
+};
