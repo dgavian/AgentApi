@@ -1,41 +1,45 @@
 'use strict';
 
-const url = require('url'),
-    serviceFactory = require('../../service/serviceFactory').ServiceFactory,
+const serviceFactory = require('../../service/serviceFactory').ServiceFactory,
     ServiceFactory = new serviceFactory(),
     Validator = ServiceFactory.makeValidator(),
     AgentRepo = ServiceFactory.makeAgentRepo(),
     AgentService = ServiceFactory.makeAgentService(Validator, AgentRepo),
-    ResponseService = ServiceFactory.makeResponseService(),
-    getLocationHeader = function (req, newId) {
-        let reqUrl = url.format({
-            protocol: req.protocol,
-            host: req.get('host'),
-            pathname: req.originalUrl,
-        });
-
-        return `${reqUrl}/${newId}`;
-    };
+    ResponseService = ServiceFactory.makeResponseService();
 
 exports.getAllAgents = function (req, res) {
-    AgentRepo.getAllAgents()
+    AgentService.getAllAgents()
         .then(agents => res.json(agents))
-        .catch(error => res.send(error));   // TODO: Fix for 500.
+        .catch(error => {
+            const responseContent = ResponseService.getServerErrorResponse(res);
+            res.json(responseContent);
+        });
 };
 
 exports.addAgent = function (req, res) {
     const requestBody = req.body;
-    console.log(`Request: ${JSON.stringify(requestBody)}`);
+    
     AgentService.addAgent(requestBody)
         .then(() => {
-            const locationHeader = getLocationHeader(req, requestBody._id);
-            res.location(locationHeader);
-            res.status(201);
+            ResponseService.getCreatedResponse(req, requestBody._id, res);
             res.json(requestBody);
         })
         .catch(error => {
-            const errorResponseData = ResponseService.getErrorResponse(error);
-            res.status(errorResponseData.statusCode);
-            res.json(errorResponseData.content);
+            const responseContent = ResponseService.getErrorResponse(error, res);
+            res.json(responseContent);
         });
+};
+
+exports.getAgent = function (req, res) {
+    const agentId = req.params.agentId;
+    AgentService.getAgentById(agentId)
+        .then(a => res.json(a))
+        .catch(error => {
+            const responseContent = ResponseService.getErrorResponse(error, res);
+            res.json(responseContent);
+        });
+};
+
+exports.updateAgent = function (req, res) {
+
 };

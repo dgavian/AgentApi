@@ -180,5 +180,31 @@
             "primary": "828-865-2345",
             "mobile": "828-432-3211"
         }
+    },
+    {
+        "_id": 12,
+        "name": "Frank Furter",
+        "address": "789 Main Street",
+        "city": "Furd",
+        "state": "NJ",
+        "zipCode": "12345",
+        "tier": 3,
+        "phone": {
+            "primary": "828-865-2345",
+            "mobile": "828-432-3211"
+        }
+    },
+    {
+        "_id": 14,
+        "name": "Frank Furter",
+        "address": "789 Main Street",
+        "city": "Furd",
+        "state": "NJ",
+        "zipCode": "12345",
+        "tier": 3,
+        "phone": {
+            "primary": "828-865-2345",
+            "mobile": "828-432-3211"
+        }
     }
 ]

@@ -14,5 +14,13 @@ class ResourceConflictError extends Error {
     }
 }
 
+class NotFoundError extends Error {
+    constructor (message) {
+        super (message);
+        this.name = 'NotFoundError';
+    }
+}
+
 exports.InvalidResourceError = InvalidResourceError;
 exports.ResourceConflictError = ResourceConflictError;
+exports.NotFoundError = NotFoundError;

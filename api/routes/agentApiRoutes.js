@@ -6,4 +6,8 @@ module.exports = function (app) {
     app.route('/v1/agents')
         .get(agents.getAllAgents)
         .post(agents.addAgent);
+
+    app.route('/v1/agents/:agentId')
+        .get(agents.getAgent)
+        .put(agents.updateAgent);
 };

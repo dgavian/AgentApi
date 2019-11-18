@@ -5,10 +5,13 @@ const errors = require('./errors');
 const AgentService = function (validator, repo) {
 
     const agentExists = async function (agentId) {
-        const agent = await repo.getAgent(agentId);
-        console.log(`Agent with id ${agentId}: ${JSON.stringify(agent)}`);  
+        const agent = await repo.getAgent(agentId); 
         return !!agent;
     };
+
+    this.getAllAgents = async function () {
+        return await repo.getAllAgents();
+    }
 
     this.addAgent = async function (newAgent) {
         if (!validator.isValidAgent(newAgent)) {
@@ -21,6 +24,15 @@ const AgentService = function (validator, repo) {
         }
 
         await repo.addAgent(newAgent);
+    };
+
+    this.getAgentById = async function (agentId) {
+        agentId = parseInt(agentId, 10);
+        const agent = await repo.getAgent(agentId);
+        if (!agent) {
+            throw new errors.NotFoundError(`Agent with id ${agentId} not found`);
+        }
+        return agent;
     };
 };
 

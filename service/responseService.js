@@ -1,23 +1,46 @@
 'use strict';
 
+const url = require('url');
+
 const errors = require('./errors');
 
 const ResponseService = function () {
-    this.getErrorResponse = function (err) {
-        let result = {
-            content: { message: err.message }
-        };
+    this.getErrorResponse = function (err, res) {
+        let result = { message: err.message };
 
         if (err instanceof (errors.InvalidResourceError)) {
-            result.statusCode = 400;
+            res.status(400);
+            return result;
         } else if (err instanceof (errors.ResourceConflictError)) {
-            result.statusCode = 409;
+            res.status(409);
+            return result;
+        } else if (err instanceof (errors.NotFoundError)) {
+            res.status(404);
+            return result;
         } else {
-            result.statusCode = 500;
-            result.content.message = 'Internal Server Error';
+            return this.getServerErrorResponse(res);
         }
+    };
 
-        return result;
+    this.getServerErrorResponse = function (res) {
+        res.status(500);
+        return { message: 'Internal Server Error' };
+    }
+
+    this.getCreatedResponse = function (req, newId, res) {
+        const locationHeader = getLocationHeader(req, newId);
+        res.location(locationHeader);
+        res.status(201);
+    };
+
+    function getLocationHeader(req, newId) {
+        const reqUrl = url.format({
+            protocol: req.protocol,
+            host: req.get('host'),
+            pathname: req.originalUrl,
+        });
+
+        return `${reqUrl}/${newId}`;
     };
 };
 

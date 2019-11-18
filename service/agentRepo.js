@@ -12,8 +12,6 @@ const AgentRepo = function () {
 
         const agents = JSON.parse(result);
 
-        console.log(`Successfully read all agents: ${JSON.stringify(agents)}`);
-
         return agents;
     };
 
