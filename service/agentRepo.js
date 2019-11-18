@@ -22,6 +22,12 @@ const AgentRepo = function () {
         agents.push(newAgent);
         await fs.writeFile(agentsPath, JSON.stringify(agents, null, 4));
     };
+
+    this.getAgent = async function (agentId) {
+        const agents = await this.getAllAgents();
+        const result = agents.find(a => a._id === agentId);
+        return result;
+    }
 };
 
 exports.AgentRepo = AgentRepo;
