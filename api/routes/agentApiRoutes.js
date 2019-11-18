@@ -9,5 +9,5 @@ module.exports = function (app) {
 
     app.route('/v1/agents/:agentId')
         .get(agents.getAgent)
-        .put(agents.updateAgent);
+        .put(agents.addOrUpdateAgent);
 };

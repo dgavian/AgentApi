@@ -31,7 +31,7 @@ exports.addAgent = function (req, res) {
 };
 
 exports.getAgent = function (req, res) {
-    const agentId = req.params.agentId;
+    const agentId = parseInt(req.params.agentId, 10);
     AgentService.getAgentById(agentId)
         .then(a => res.json(a))
         .catch(error => {
@@ -40,6 +40,13 @@ exports.getAgent = function (req, res) {
         });
 };
 
-exports.updateAgent = function (req, res) {
-
+exports.addOrUpdateAgent = function (req, res) {
+    const requestBody = req.body;
+    const agentId = parseInt(req.params.agentId, 10);
+    AgentService.addOrUpdateAgent(agentId, requestBody)
+        .then(() => res.status(200).end())
+        .catch(error => {
+            const responseContent = ResponseService.getErrorResponse(error, res);
+            res.json(responseContent);           
+        });
 };

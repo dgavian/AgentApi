@@ -2,10 +2,10 @@
 
 const ValidationService = function () {
 
-    const validateTopLevelProps = function (agent) {
-        const agentProps = ['_id', 'name', 'address', 'city', 'state', 'zipCode', 'tier', 'phone'];
-        for (let p of agentProps) {
-            if (!agent[p]) {
+    const validateTopLevelProps = function (obj, props) {
+
+        for (let p of props) {
+            if (!obj[p]) {
                 return false;
             }
         }
@@ -29,16 +29,53 @@ const ValidationService = function () {
         return true;
     }
 
+    const agentIdsMatch = function (agent, id) {
+        const objId = agent._id;
+        // Id is not required on the agent object in this context.
+        if (!objId) {
+            return true;
+        }
+        return (objId === id);
+    }
+
     this.isValidAgent = function (agent) {
         if (!agent) {
             return false;
         }
 
-        if (!validateTopLevelProps(agent)) {
+        const agentProps = ['_id', 'name', 'address', 'city', 'state', 'zipCode', 'tier', 'phone'];
+
+        if (!validateTopLevelProps(agent, agentProps)) {
             return false;
         }
 
         if (!validateId(agent._id)) {
+            return false;
+        }
+
+        if (!validatePhone(agent.phone)) {
+            return false;
+        };
+
+        return true;
+    };
+
+    this.isValidAgentForUpdate = function (agent, id) {
+        if (!agent) {
+            return false;
+        }
+
+        if (!validateId(id)) {
+            return false;
+        }
+
+        if (!agentIdsMatch(agent, id)) {
+            return false;
+        }
+
+        const agentProps = ['name', 'address', 'city', 'state', 'zipCode', 'tier', 'phone'];
+
+        if (!validateTopLevelProps(agent, agentProps)) {
             return false;
         }
 
