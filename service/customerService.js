@@ -22,6 +22,8 @@ const CustomerService = function (validator, customerRepo, agentRepo) {
             throw new errors.UnprocessableError(`Cannot add customer to agent with id ${agentId}`)
         }
 
+        // TODO: make sure customer does not exist.
+
         newCustomer.agent_id = agentId;
 
         // TODO: Assign guid
