@@ -13,8 +13,8 @@ const AgentService = function (validator, repo) {
             throw new errors.InvalidResourceError('Invalid agent');
         }
 
-        const agentExistsResult = await repo.agentExists(newAgent._id);
-        if (agentExistsResult) {
+        const agentExists = await repo.agentExists(newAgent._id);
+        if (agentExists) {
             throw new errors.ResourceConflictError(`Agent with id ${newAgent._id} already exists`);
         }
 

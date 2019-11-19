@@ -32,3 +32,14 @@ exports.addCustomer = function (req, res) {
             res.json(responseContent);
         });
 };
+
+exports.removeCustomer = function (req, res) {
+    const customerId = parseInt(req.params.customerId, 10);
+
+    CustomerService.removeCustomer(customerId)
+        .then(() => res.status(204).end())
+        .catch(error => {
+            const responseContent = ResponseService.getServerErrorResponse(res, error);
+            res.json(responseContent);
+        });
+}

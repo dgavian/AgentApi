@@ -95,7 +95,7 @@ const ValidationService = function () {
             return false;
         }
 
-        const custProps = ['_id', 'guid', 'isActive', 'name', 'company', 'email', 'phone', 'address', 'registered'];
+        const custProps = ['_id', 'isActive', 'name', 'company', 'email', 'phone', 'address', 'registered'];
 
         if (!validateTopLevelProps(customer, custProps)) {
             return false;
@@ -109,7 +109,7 @@ const ValidationService = function () {
         if (!validateTopLevelProps(customer.name, nameProps)) {
             return false;
         }
-        
+
         return true;
     }
 };
