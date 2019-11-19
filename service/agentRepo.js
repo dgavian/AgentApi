@@ -2,8 +2,7 @@
 
 const fs = require('fs').promises,
     dataPath = 'data/',
-    agentsPath = `${dataPath}agents.json`,
-    customersPath = `${dataPath}customers.json`;
+    agentsPath = `${dataPath}agents.json`;
 
 const AgentRepo = function () {
     this.getAllAgents = async function () {
@@ -40,6 +39,11 @@ const AgentRepo = function () {
 
         await fs.writeFile(agentsPath, JSON.stringify(agents, null, 4));
     }
+
+    this.agentExists = async function (agentId) {
+        const agent = await this.getAgent(agentId);
+        return !!agent;
+    };
 };
 
 exports.AgentRepo = AgentRepo;

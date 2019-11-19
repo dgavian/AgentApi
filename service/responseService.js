@@ -17,12 +17,16 @@ const ResponseService = function () {
         } else if (err instanceof (errors.NotFoundError)) {
             res.status(404);
             return result;
+        } else if (err instanceof (errors.UnprocessableError)) {
+            res.status(422);
+            return result;
         } else {
-            return this.getServerErrorResponse(res);
+            return this.getServerErrorResponse(res, err);
         }
     };
 
-    this.getServerErrorResponse = function (res) {
+    this.getServerErrorResponse = function (res, err) {
+        console.error(`Unexpected error: ${err.stack}`);
         res.status(500);
         return { message: 'Internal Server Error' };
     }

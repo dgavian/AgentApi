@@ -4,11 +4,6 @@ const errors = require('./errors');
 
 const AgentService = function (validator, repo) {
 
-    const agentExists = async function (agentId) {
-        const agent = await repo.getAgent(agentId);
-        return !!agent;
-    };
-
     this.getAllAgents = async function () {
         return await repo.getAllAgents();
     }
@@ -18,7 +13,7 @@ const AgentService = function (validator, repo) {
             throw new errors.InvalidResourceError('Invalid agent');
         }
 
-        const agentExistsResult = await agentExists(newAgent._id);
+        const agentExistsResult = await repo.agentExists(newAgent._id);
         if (agentExistsResult) {
             throw new errors.ResourceConflictError(`Agent with id ${newAgent._id} already exists`);
         }

@@ -85,6 +85,33 @@ const ValidationService = function () {
 
         return true;
     };
+
+    this.isValidCustomer = function (customer, agentId) {
+        if (!customer) {
+            return false;
+        }
+
+        if (!validateId(agentId)) {
+            return false;
+        }
+
+        const custProps = ['_id', 'guid', 'isActive', 'name', 'company', 'email', 'phone', 'address', 'registered'];
+
+        if (!validateTopLevelProps(customer, custProps)) {
+            return false;
+        }
+
+        if (!validateId(customer._id)) {
+            return false;
+        }
+
+        const nameProps = ['first', 'last'];
+        if (!validateTopLevelProps(customer.name, nameProps)) {
+            return false;
+        }
+        
+        return true;
+    }
 };
 
 exports.ValidationService = ValidationService;

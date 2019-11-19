@@ -11,7 +11,7 @@ exports.getAllAgents = function (req, res) {
     AgentService.getAllAgents()
         .then(agents => res.json(agents))
         .catch(error => {
-            const responseContent = ResponseService.getServerErrorResponse(res);
+            const responseContent = ResponseService.getServerErrorResponse(res, error);
             res.json(responseContent);
         });
 };

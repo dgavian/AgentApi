@@ -4,6 +4,8 @@ const AgentRepo = require('./agentRepo').AgentRepo;
 const AgentService = require('./agentService').AgentService;
 const Validator = require('./validationService').ValidationService;
 const ResponseService = require('./responseService').ResponseService;
+const CustomerRepo = require('./customerRepo').CustomerRepo;
+const CustomerService = require('./customerService').CustomerService;
 
 const ServiceFactory = function () {
     this.makeValidator = function () {
@@ -21,6 +23,14 @@ const ServiceFactory = function () {
     this.makeResponseService = function () {
         return new ResponseService();
     }
+
+    this.makeCustomerRepo = function () {
+        return new CustomerRepo();
+    };
+
+    this.makeCustomerService = function (validator, customerRepo, agentRepo) {
+        return new CustomerService(validator, customerRepo, agentRepo);
+    };
 };
 
 exports.ServiceFactory = ServiceFactory;
