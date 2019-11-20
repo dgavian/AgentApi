@@ -16,7 +16,7 @@ module.exports = function (app) {
         .get(customers.getAgentCustomers)
         .post(customers.addCustomer);
 
-    app.route('/v1/customers/:customerId')
+    app.route('/v1/agents/:agentId/customers/:customerId')
         .get(customers.getCustomer)
         .put(customers.addOrUpdateCustomer)
         .delete(customers.removeCustomer);

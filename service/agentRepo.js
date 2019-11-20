@@ -23,16 +23,10 @@ const AgentRepo = function () {
         return result;
     };
 
-    this.addOrUpdateAgent = async function (agent) {
+    this.updateAgent = async function (agent) {
         const agents = await this.getAllAgents();
-        let existingAgent = agents.find(a => a._id === agent._id);
-        if (!existingAgent) {
-            agents.push(agent);
-        } else {
-            for (let [key, value] of Object.entries(agent)) {
-                existingAgent[key] = value;
-            }
-        }
+        const agentIndex = agents.findIndex(a => a._id === agent._id);
+        agents[agentIndex] = agent;
         clearCache();
         await fs.writeFile(agentsPath, JSON.stringify(agents, null, 4));
     };

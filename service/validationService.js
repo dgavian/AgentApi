@@ -2,7 +2,7 @@
 
 const ValidationService = function () {
 
-    const validateTopLevelProps = function (obj, props) {
+    const validateRequiredProps = function (obj, props) {
 
         for (let p of props) {
             if (!obj[p]) {
@@ -17,35 +17,13 @@ const ValidationService = function () {
         return Number.isInteger(id);
     };
 
-    const validatePhone = function (phone) {
-        const phoneProps = ['primary', 'mobile'];
-
-        for (let p of phoneProps) {
-            if (!phone[p]) {
-                return false;
-            }
-        }
-
-        return true;
-    };
-
-    const idsMatch = function (obj, id) {
-        const objId = obj._id;
-        // Id is not required on the object in this context.
-        if (!objId) {
-            return true;
-        }
-        return (objId === id);
-    };
-
     this.isValidAgent = function (agent) {
         if (!agent) {
             return false;
         }
 
-        const agentProps = ['_id', 'name', 'address', 'city', 'state', 'zipCode', 'tier', 'phone'];
-
-        if (!validateTopLevelProps(agent, agentProps)) {
+        const requiredAgentProps = ['_id', 'name', 'address', 'city', 'state', 'zipCode', 'tier', 'phone'];
+        if (!validateRequiredProps(agent, requiredAgentProps)) {
             return false;
         }
 
@@ -53,33 +31,8 @@ const ValidationService = function () {
             return false;
         }
 
-        if (!validatePhone(agent.phone)) {
-            return false;
-        };
-
-        return true;
-    };
-
-    this.isValidAgentForUpdate = function (agent, id) {
-        if (!agent) {
-            return false;
-        }
-
-        if (!validateId(id)) {
-            return false;
-        }
-
-        if (!idsMatch(agent, id)) {
-            return false;
-        }
-
-        const agentProps = ['name', 'address', 'city', 'state', 'zipCode', 'tier', 'phone'];
-
-        if (!validateTopLevelProps(agent, agentProps)) {
-            return false;
-        }
-
-        if (!validatePhone(agent.phone)) {
+        const requiredPhoneProps = ['primary', 'mobile'];
+        if (!validateRequiredProps(agent.phone, requiredPhoneProps)) {
             return false;
         };
 
@@ -95,9 +48,8 @@ const ValidationService = function () {
             return false;
         }
 
-        const custProps = ['_id', 'isActive', 'name', 'company', 'email', 'phone', 'address', 'registered'];
-
-        if (!validateTopLevelProps(customer, custProps)) {
+        const requiredCustProps = ['_id', 'guid', 'isActive', 'name', 'company', 'email', 'phone', 'address', 'registered'];
+        if (!validateRequiredProps(customer, requiredCustProps)) {
             return false;
         }
 
@@ -105,39 +57,8 @@ const ValidationService = function () {
             return false;
         }
 
-        const nameProps = ['first', 'last'];
-        if (!validateTopLevelProps(customer.name, nameProps)) {
-            return false;
-        }
-
-        return true;
-    };
-
-    this.isValidCustomerForUpdate = function (customer, id) {
-        if (!customer) {
-            return false;
-        }
-
-        if (!validateId(id)) {
-            return false;
-        }
-
-        if (!validateId(customer.agent_id)) {
-            return false;
-        }
-
-        if (!idsMatch(customer, id)) {
-            return false;
-        }
-
-        const custProps = ['isActive', 'name', 'company', 'email', 'phone', 'address', 'registered'];
-
-        if (!validateTopLevelProps(customer, custProps)) {
-            return false;
-        }
-
-        const nameProps = ['first', 'last'];
-        if (!validateTopLevelProps(customer.name, nameProps)) {
+        const requiredNameProps = ['first', 'last'];
+        if (!validateRequiredProps(customer.name, requiredNameProps)) {
             return false;
         }
 

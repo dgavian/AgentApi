@@ -20,10 +20,10 @@ const CustomerRepo = function () {
         await fs.writeFile(customersPath, JSON.stringify(customers, null, 4));
     };
 
-    this.removeCustomer = async function (customerId) {
+    this.removeCustomer = async function (customerId, agentId) {
         console.log(`Attempting to remove customer with id ${customerId}`);
         const customers = await getAllCustomers();
-        const index = customers.findIndex(c => c._id === customerId);
+        const index = customers.findIndex(c => c._id === customerId && c.agent_id == agentId);
         if (index >= 0) {
             console.log(`Removing customer with id ${customerId}`);
             const removedItem = customers.splice(index, 1);
@@ -32,30 +32,23 @@ const CustomerRepo = function () {
         }
     };
 
-    this.addOrUpdateCustomer = async function(customer) {
+    this.updateCustomer = async function (customer) {
         const customers = await getAllCustomers();
-        let existingCustomer = customers.find(a => a._id === customer._id);
-        if (!existingCustomer) {
-            customers.push(customer);
-        } else {
-            for (let key of Object.keys(customer)) {
-                if (canUpdateCustomerProperty(key)) {
-                    existingCustomer[key] = customer[key];
-                }
-            }
-        }
+        const customerIndex = customers.findIndex(a => a._id === customer._id);
+        customers[customerIndex] = customer;
         clearCache();
         await fs.writeFile(customersPath, JSON.stringify(customers, null, 4));
     };
 
-    this.getCustomer = async function (customerId) {
+    this.getCustomer = async function (customerId, agentId) {
         const customers = await getAllCustomers();
-        const customer = customers.find(c => c._id === customerId);
+        const customer = customers.find(c => c._id === customerId && c.agent_id === agentId);
         return customer;
     };
 
     this.customerExists = async function (customerId) {
-        const foundCustomer = this.getCustomer(customerId);
+        const customers = await getAllCustomers();
+        const foundCustomer = customers.find(c => c._id === customerId);
         return !!foundCustomer;
     };
 
@@ -83,10 +76,6 @@ const CustomerRepo = function () {
 
     function clearCache() {
         getAllCustomers.customerCache = null;
-    }
-
-    function canUpdateCustomerProperty(key) {
-        return key !== 'guid' && key !== 'agent_id';
     }
 };
 

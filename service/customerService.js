@@ -1,7 +1,5 @@
 'use strict';
 
-const uuidv4 = require('uuid/v4');
-
 const errors = require('./errors');
 
 // TODO: Add unit tests.
@@ -29,31 +27,35 @@ const CustomerService = function (validator, customerRepo, agentRepo) {
         if (customerExists) {
             throw new errors.ResourceConflictError(`Customer with id ${newCustomer._id} already exists`);
         }
-        
-        const guid = uuidv4();
-        
-        newCustomer.guid = guid;
 
         newCustomer.agent_id = agentId;
 
         await customerRepo.addCustomer(newCustomer);
     };
 
-    this.removeCustomer = async function (customerId) {
-        await customerRepo.removeCustomer(customerId);
+    this.removeCustomer = async function (customerId, agentId) {
+        await customerRepo.removeCustomer(customerId, agentId);
     };
 
-    this.addOrUpdateCustomer = async function (customer, customerId) {
-        if (!validator.isValidCustomerForUpdate(customer, customerId)) {
+    this.addOrUpdateCustomer = async function (customer, customerId, agentId) {
+        customer._id = customerId;
+        const customerExists = await customerRepo.customerExists(customerId);
+        if (!customerExists) {
+            await this.addCustomer(customer, agentId);
+            return;
+        };
+
+        if (!validator.isValidCustomer(customer, agentId)) {
             throw new errors.InvalidResourceError('Invalid customer');
         }
 
-        customer._id = customerId;
-        await customerRepo.addOrUpdateCustomer(customer);
+        customer.agent_id = agentId;
+
+        await customerRepo.updateCustomer(customer);
     };
 
-    this.getCustomer = async function(customerId) {
-        const customer = await customerRepo.getCustomer(customerId);
+    this.getCustomer = async function(customerId, agentId) {
+        const customer = await customerRepo.getCustomer(customerId, agentId);
         if (!customer) {
             throw new errors.NotFoundError(`Customer with id ${customerId} not found`);
         }

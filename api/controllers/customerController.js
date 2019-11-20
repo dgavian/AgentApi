@@ -34,9 +34,10 @@ exports.addCustomer = function (req, res) {
 };
 
 exports.removeCustomer = function (req, res) {
+    const agentId = parseInt(req.params.agentId, 10);
     const customerId = parseInt(req.params.customerId, 10);
 
-    CustomerService.removeCustomer(customerId)
+    CustomerService.removeCustomer(customerId, agentId)
         .then(() => res.status(204).end())
         .catch(error => {
             const responseContent = ResponseService.getServerErrorResponse(res, error);
@@ -46,9 +47,10 @@ exports.removeCustomer = function (req, res) {
 
 exports.addOrUpdateCustomer = function(req, res) {
     const requestBody = req.body;
+    const agentId = parseInt(req.params.agentId, 10);
     const customerId = parseInt(req.params.customerId, 10);
 
-    CustomerService.addOrUpdateCustomer(requestBody, customerId)
+    CustomerService.addOrUpdateCustomer(requestBody, customerId, agentId)
         .then(() => res.status(200).end())
         .catch(error => {
             const responseContent = ResponseService.getErrorResponse(error, res);
@@ -57,9 +59,10 @@ exports.addOrUpdateCustomer = function(req, res) {
 };
 
 exports.getCustomer = function (req, res) {
+    const agentId = parseInt(req.params.agentId, 10);
     const customerId = parseInt(req.params.customerId, 10);
     
-    CustomerService.getCustomer(customerId)
+    CustomerService.getCustomer(customerId, agentId)
         .then(c => res.json(c))
         .catch(error => {
             const responseContent = ResponseService.getErrorResponse(error, res);
