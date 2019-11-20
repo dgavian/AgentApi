@@ -50,6 +50,8 @@ describe('Validation service', function () {
 
         assert.equal(actual, expected);
     });
+
+    // TODO: Add additional tests for customer validation methods.
 });
 
 function makeValidAgent() {

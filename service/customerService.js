@@ -4,6 +4,8 @@ const uuidv4 = require('uuid/v4');
 
 const errors = require('./errors');
 
+// TODO: Add unit tests.
+
 const CustomerService = function (validator, customerRepo, agentRepo) {
     this.getAgentCustomers = async function (agentId) {
         const agentCustomers = await customerRepo.getAgentCustomers(agentId);
