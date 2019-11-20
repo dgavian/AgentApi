@@ -21,7 +21,7 @@ const AgentRepo = function () {
         const agents = await this.getAllAgents();
         const result = agents.find(a => a._id === agentId);
         return result;
-    }
+    };
 
     this.addOrUpdateAgent = async function (agent) {
         const agents = await this.getAllAgents();
@@ -35,7 +35,7 @@ const AgentRepo = function () {
         }
         clearCache();
         await fs.writeFile(agentsPath, JSON.stringify(agents, null, 4));
-    }
+    };
 
     this.agentExists = async function (agentId) {
         const agent = await this.getAgent(agentId);

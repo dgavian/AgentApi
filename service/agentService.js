@@ -6,7 +6,7 @@ const AgentService = function (validator, repo) {
 
     this.getAllAgents = async function () {
         return await repo.getAllAgents();
-    }
+    };
 
     this.addAgent = async function (newAgent) {
         if (!validator.isValidAgent(newAgent)) {

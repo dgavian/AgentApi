@@ -17,5 +17,7 @@ module.exports = function (app) {
         .post(customers.addCustomer);
 
     app.route('/v1/customers/:customerId')
+        .get(customers.getCustomer)
+        .put(customers.addOrUpdateCustomer)
         .delete(customers.removeCustomer);
 };

@@ -32,9 +32,30 @@ const CustomerRepo = function () {
         }
     };
 
-    this.customerExists = async function (customerId) {
+    this.addOrUpdateCustomer = async function(customer) {
         const customers = await getAllCustomers();
-        const foundCustomer = customers.find(c => c._id === customerId);
+        let existingCustomer = customers.find(a => a._id === customer._id);
+        if (!existingCustomer) {
+            customers.push(customer);
+        } else {
+            for (let key of Object.keys(customer)) {
+                if (canUpdateCustomerProperty(key)) {
+                    existingCustomer[key] = customer[key];
+                }
+            }
+        }
+        clearCache();
+        await fs.writeFile(customersPath, JSON.stringify(customers, null, 4));
+    };
+
+    this.getCustomer = async function (customerId) {
+        const customers = await getAllCustomers();
+        const customer = customers.find(c => c._id === customerId);
+        return customer;
+    };
+
+    this.customerExists = async function (customerId) {
+        const foundCustomer = this.getCustomer(customerId);
         return !!foundCustomer;
     };
 
@@ -46,7 +67,7 @@ const CustomerRepo = function () {
             getAllCustomers.customerCache = customers;
         }
         return getAllCustomers.customerCache;
-    };
+    }
 
     function mapCustomers(customers) {
         return customers.map(c => {
@@ -58,11 +79,15 @@ const CustomerRepo = function () {
             };
             return newObj;
         });
-    };
+    }
 
     function clearCache() {
         getAllCustomers.customerCache = null;
-    };
+    }
+
+    function canUpdateCustomerProperty(key) {
+        return key !== 'guid' && key !== 'agent_id';
+    }
 };
 
 exports.CustomerRepo = CustomerRepo;

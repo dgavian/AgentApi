@@ -29,7 +29,7 @@ const ResponseService = function () {
         console.error(`Unexpected error: ${err.stack}`);
         res.status(500);
         return { message: 'Internal Server Error' };
-    }
+    };
 
     this.getCreatedResponse = function (req, newId, res) {
         const locationHeader = getLocationHeader(req, newId);
@@ -45,7 +45,7 @@ const ResponseService = function () {
         });
 
         return `${reqUrl}/${newId}`;
-    };
+    }
 };
 
 exports.ResponseService = ResponseService;

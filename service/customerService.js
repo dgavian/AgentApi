@@ -40,6 +40,23 @@ const CustomerService = function (validator, customerRepo, agentRepo) {
     this.removeCustomer = async function (customerId) {
         await customerRepo.removeCustomer(customerId);
     };
+
+    this.addOrUpdateCustomer = async function (customer, customerId) {
+        if (!validator.isValidCustomerForUpdate(customer, customerId)) {
+            throw new errors.InvalidResourceError('Invalid customer');
+        }
+
+        customer._id = customerId;
+        await customerRepo.addOrUpdateCustomer(customer);
+    };
+
+    this.getCustomer = async function(customerId) {
+        const customer = await customerRepo.getCustomer(customerId);
+        if (!customer) {
+            throw new errors.NotFoundError(`Customer with id ${customerId} not found`);
+        }
+        return customer;
+    };
 };
 
 exports.CustomerService = CustomerService;

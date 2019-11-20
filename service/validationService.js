@@ -27,16 +27,16 @@ const ValidationService = function () {
         }
 
         return true;
-    }
+    };
 
-    const agentIdsMatch = function (agent, id) {
-        const objId = agent._id;
-        // Id is not required on the agent object in this context.
+    const idsMatch = function (obj, id) {
+        const objId = obj._id;
+        // Id is not required on the object in this context.
         if (!objId) {
             return true;
         }
         return (objId === id);
-    }
+    };
 
     this.isValidAgent = function (agent) {
         if (!agent) {
@@ -69,7 +69,7 @@ const ValidationService = function () {
             return false;
         }
 
-        if (!agentIdsMatch(agent, id)) {
+        if (!idsMatch(agent, id)) {
             return false;
         }
 
@@ -111,7 +111,38 @@ const ValidationService = function () {
         }
 
         return true;
-    }
+    };
+
+    this.isValidCustomerForUpdate = function (customer, id) {
+        if (!customer) {
+            return false;
+        }
+
+        if (!validateId(id)) {
+            return false;
+        }
+
+        if (!validateId(customer.agent_id)) {
+            return false;
+        }
+
+        if (!idsMatch(customer, id)) {
+            return false;
+        }
+
+        const custProps = ['isActive', 'name', 'company', 'email', 'phone', 'address', 'registered'];
+
+        if (!validateTopLevelProps(customer, custProps)) {
+            return false;
+        }
+
+        const nameProps = ['first', 'last'];
+        if (!validateTopLevelProps(customer.name, nameProps)) {
+            return false;
+        }
+
+        return true;
+    };
 };
 
 exports.ValidationService = ValidationService;

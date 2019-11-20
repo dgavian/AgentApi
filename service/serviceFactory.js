@@ -10,7 +10,7 @@ const CustomerService = require('./customerService').CustomerService;
 const ServiceFactory = function () {
     this.makeValidator = function () {
         return new Validator();
-    }
+    };
 
     this.makeAgentRepo = function () {
         return new AgentRepo();
@@ -22,7 +22,7 @@ const ServiceFactory = function () {
 
     this.makeResponseService = function () {
         return new ResponseService();
-    }
+    };
 
     this.makeCustomerRepo = function () {
         return new CustomerRepo();

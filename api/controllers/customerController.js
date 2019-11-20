@@ -42,4 +42,27 @@ exports.removeCustomer = function (req, res) {
             const responseContent = ResponseService.getServerErrorResponse(res, error);
             res.json(responseContent);
         });
-}
+};
+
+exports.addOrUpdateCustomer = function(req, res) {
+    const requestBody = req.body;
+    const customerId = parseInt(req.params.customerId, 10);
+
+    CustomerService.addOrUpdateCustomer(requestBody, customerId)
+        .then(() => res.status(200).end())
+        .catch(error => {
+            const responseContent = ResponseService.getErrorResponse(error, res);
+            res.json(responseContent);
+        });
+};
+
+exports.getCustomer = function (req, res) {
+    const customerId = parseInt(req.params.customerId, 10);
+    
+    CustomerService.getCustomer(customerId)
+        .then(c => res.json(c))
+        .catch(error => {
+            const responseContent = ResponseService.getErrorResponse(error, res);
+            res.json(responseContent);
+        });
+};
