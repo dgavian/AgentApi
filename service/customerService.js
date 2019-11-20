@@ -20,7 +20,7 @@ const CustomerService = function (validator, customerRepo, agentRepo) {
 
         const agentExists = await agentRepo.agentExists(agentId);
         if (!agentExists) {
-            throw new errors.UnprocessableError(`Cannot add customer to agent with id ${agentId}`)
+            throw new errors.UnprocessableError(`Cannot add customer to agent id ${agentId}`)
         }
 
         const customerExists = await customerRepo.customerExists(newCustomer._id);
@@ -39,11 +39,11 @@ const CustomerService = function (validator, customerRepo, agentRepo) {
 
     this.addOrUpdateCustomer = async function (customer, customerId, agentId) {
         customer._id = customerId;
-        const customerExists = await customerRepo.customerExists(customerId);
-        if (!customerExists) {
-            await this.addCustomer(customer, agentId);
-            return;
-        };
+
+        const agentExists = await agentRepo.agentExists(agentId);
+        if (!agentExists) {
+            throw new errors.UnprocessableError(`Cannot update customer wih agent id ${agentId}`)
+        }
 
         if (!validator.isValidCustomer(customer, agentId)) {
             throw new errors.InvalidResourceError('Invalid customer');
@@ -51,7 +51,13 @@ const CustomerService = function (validator, customerRepo, agentRepo) {
 
         customer.agent_id = agentId;
 
-        await customerRepo.updateCustomer(customer);
+        const customerExists = await customerRepo.customerExists(customerId);
+
+        if (customerExists) {
+            await customerRepo.updateCustomer(customer);
+        } else {
+            await customerRepo.addCustomer(customer);
+        }
     };
 
     this.getCustomer = async function(customerId, agentId) {

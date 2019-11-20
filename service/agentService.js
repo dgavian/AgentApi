@@ -31,17 +31,17 @@ const AgentService = function (validator, repo) {
 
     this.addOrUpdateAgent = async function (agentId, agent) {
         agent._id = agentId;
-        const agentExists = await repo.agentExists(agentId);
-        if (!agentExists) {
-            await this.addAgent(agent);
-            return;
-        }
 
         if (!validator.isValidAgent(agent)) {
             throw new errors.InvalidResourceError('Invalid agent');
         }
 
-        await repo.updateAgent(agent);
+        const agentExists = await repo.agentExists(agentId);
+        if (agentExists) {
+            await repo.updateAgent(agent);
+        } else {
+            await repo.addAgent(agent);
+        }
     };
 };
 
