@@ -5,7 +5,7 @@ const ValidationService = function () {
     const validateRequiredProps = function (obj, props) {
 
         for (let p of props) {
-            if (!obj[p]) {
+            if (!obj[p] && obj[p] !== false && obj[p] !== 0) {
                 return false;
             }
         }
