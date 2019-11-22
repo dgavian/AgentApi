@@ -27,10 +27,12 @@ describe('Agent controller', function () {
         getAgentByIdStub,
         addOrUpdateAgentStub,
         jsonStub,
+        statusStub,
         endStub,
         getCreatedResponseStub,
         req,
-        res;
+        res,
+        errorLogStub;
 
     this.beforeEach(function () {
         factory = new ServiceFactory();
@@ -45,48 +47,45 @@ describe('Agent controller', function () {
         req = testHelpers.makeFakeRequest();
         res = testHelpers.makeFakeResponse();
         jsonStub = sinon.stub(res, 'json');
+        statusStub = sinon.stub(res, 'status');
         endStub = sinon.stub(res, 'end');
         getCreatedResponseStub = sinon.stub(responseService, 'getCreatedResponse');
+        errorLogStub = sinon.stub(console, 'error');
     });
 
     this.afterEach(function () {
         sinon.restore();
     });
 
-    it('getAllAgents with a successful service call should result in expected response', function () {
+    it('getAllAgents with a successful service call should result in expected response', async function () {
         const allAgents = makeAllAgents();
         getAllAgentsStub.resolves(allAgents);
         makeAgentServiceStub.returns(agentService);
         makeResponseServiceStub.returns(responseService);
         sut = new Sut(factory);
 
-        sut.getAllAgents(req, res)
-            .then(() => {
-                assert.equal(res.statusCode, 200);
-                assert.equal(jsonStub.called, true);
-            })
-            .catch(error => {
-                assert.fail();
-            });
+        await sut.getAllAgents(req, res);
+
+        assert.equal(jsonStub.calledWith(allAgents), true);
     });
 
-    it('getAllAgents with a failed service call should result in expected error response', function () {
+    it('getAllAgents with a failed service call should result in expected error response', async function () {
         getAllAgentsStub.rejects();
         makeAgentServiceStub.returns(agentService);
         makeResponseServiceStub.returns(responseService);
         sut = new Sut(factory);
 
-        sut.getAllAgents(req, res)
-            .then(() => {
-                assert.fail();
-            })
-            .catch(error => {
-                assert.equal(res.statusCode, 500);
-                assert.equal(jsonStub.called, true);
-            });
+        try {
+            await sut.getAllAgents(req, res);
+            assert.fail();
+        } catch (e) {
+            assert.equal(statusStub.calledWith(500), true);
+            assert.equal(errorLogStub.called, true);
+            assert.equal(jsonStub.called, true);
+        }
     });
 
-    it('addAgent with a successful service call should result in expected response', function () {
+    it('addAgent with a successful service call should result in expected response', async function () {
         addAgentStub.resolves();
         makeAgentServiceStub.returns(agentService);
         makeResponseServiceStub.returns(responseService);
@@ -94,17 +93,13 @@ describe('Agent controller', function () {
         req.body = newAgent;
         sut = new Sut(factory);
 
-        sut.addAgent(req, res)
-            .then(() => {
-                assert.equal(getCreatedResponseStub.called, true);
-                assert.equal(jsonStub.called, true);
-            })
-            .catch(error => {
-                assert.fail();
-            });
+        await sut.addAgent(req, res);
+
+        assert.equal(getCreatedResponseStub.called, true);
+        assert.equal(jsonStub.calledWith(newAgent), true);
     });
 
-    it('addAgent with a failed service call should result in expected error response', function () {
+    it('addAgent with a failed service call should result in expected error response', async function () {
         addAgentStub.rejects();
         makeAgentServiceStub.returns(agentService);
         makeResponseServiceStub.returns(responseService);
@@ -112,68 +107,60 @@ describe('Agent controller', function () {
         req.body = newAgent;
         sut = new Sut(factory);
 
-        sut.addAgent(req, res)
-            .then(() => {
-                assert.fail();
-            })
-            .catch(error => {
-                assert.equal(res.statusCode, 500);
-                assert.equal(jsonStub.called, true);
-            });
+        try {
+            await sut.addAgent(req, res)
+            assert.fail();
+        } catch (e) {
+            assert.equal(statusStub.calledWith(500), true);
+            assert.equal(errorLogStub.called, true);
+            assert.equal(jsonStub.called, true);
+        }
     });
 
-    it('getAgent with a successful service call should result in expected response', function () {
+    it('getAgent with a successful service call should result in expected response', async function () {
         const agent = testData.makeValidAgent();
         getAgentByIdStub.resolves(agent);
         makeAgentServiceStub.returns(agentService);
         makeResponseServiceStub.returns(responseService);
         sut = new Sut(factory);
 
-        sut.getAgent(req, res)
-            .then(() => {
-                assert.equal(res.statusCode, 200);
-                assert.equal(jsonStub.called, true);
-            })
-            .catch(error => {
-                assert.fail();
-            });
+        await sut.getAgent(req, res);
+
+        assert.equal(jsonStub.calledWith(agent), true);
     });
 
-    it('getAgent with a failed service call should result in expected error response', function () {
+    it('getAgent with a failed service call should result in expected error response', async function () {
         getAgentByIdStub.rejects();
         makeAgentServiceStub.returns(agentService);
         makeResponseServiceStub.returns(responseService);
         sut = new Sut(factory);
 
-        sut.getAgent(req, res)
-            .then(() => {
-                assert.fail();
-            })
-            .catch(error => {
-                assert.equal(res.statusCode, 500);
-                assert.equal(jsonStub.called, true);
-            });
+        try {
+            await sut.getAgent(req, res);
+            assert.fail();
+        } catch (e) {
+            assert.equal(statusStub.calledWith(500), true);
+            assert.equal(errorLogStub.called, true);
+            assert.equal(jsonStub.called, true);
+        }
     });
 
-    it('addOrUpdateAgent with a successful service call should result in expected response', function () {
+    it('addOrUpdateAgent with a successful service call should result in expected response', async function () {
         addOrUpdateAgentStub.resolves();
         makeAgentServiceStub.returns(agentService);
         makeResponseServiceStub.returns(responseService);
+        statusStub.returns(res);
         const agent = testData.makeValidAgent();
         req.body = agent;
         sut = new Sut(factory);
 
-        sut.addOrUpdateAgent(req, res)
-            .then(() => {
-                assert.equal(jsonStub.called, true);
-                assert.equal(endStub.called, true);
-            })
-            .catch(error => {
-                assert.fail();
-            });
+        await sut.addOrUpdateAgent(req, res);
+
+        assert.equal(statusStub.calledWith(200), true);
+        assert.equal(endStub.called, true);
     });
 
-    it('addOrUpdateAgent with a failed service call should result in expected error response', function () {
+    it('addOrUpdateAgent with a failed service call should result in expected error response', async function () {
         addOrUpdateAgentStub.rejects();
         makeAgentServiceStub.returns(agentService);
         makeResponseServiceStub.returns(responseService);
@@ -181,14 +168,13 @@ describe('Agent controller', function () {
         req.body = agent;
         sut = new Sut(factory);
 
-        sut.addOrUpdateAgent(req, res)
-            .then(() => {
-                assert.fail();
-            })
-            .catch(error => {
-                assert.equal(res.statusCode, 500);
-                assert.equal(jsonStub.called, true);
-            });
+        try {
+            await sut.addOrUpdateAgent(req, res);
+        } catch (e) {
+            assert.equal(statusStub.calledWith(500), true);
+            assert.equal(errorLogStub.called, true);
+            assert.equal(jsonStub.called, true);
+        }
     });
 });
 

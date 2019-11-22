@@ -2,22 +2,19 @@
 
 const TestHelpers = function () {
     this.makeFakeResponse = function () {
-        return {
-            statusCode: 200,
-            locationHeader: '',
+        const FakeResponse = {
             status: function (value) {
-                statusCode = value;
-            },
-            location: function (headerValue) {
-                this.locationHeader = headerValue;
+                
             },
             json: function (item) {
-                return JSON.stringify(item);
+                
             },
             end: function () {
 
             }
         };
+
+        return FakeResponse;
     };
 
     this.makeFakeRequest = function () {
