@@ -1,8 +1,13 @@
 'use strict';
 
 module.exports = function (app) {
-    const agents = require('../controllers/agentController');
-    const customers = require('../controllers/customerController');
+    const ServiceFactory = require('../../service/serviceFactory').ServiceFactory;
+    const AgentController = require('../controllers/agentController').AgentController;
+    const CustomerController = require('../controllers/customerController').CustomerController;
+    
+    const serviceFactory = new ServiceFactory();
+    const agents = new AgentController(serviceFactory);
+    const customers = new CustomerController(serviceFactory);
 
     app.route('/v1/agents')
         .get(agents.getAllAgents)
