@@ -9,7 +9,7 @@ const CustomerController = function (serviceFactory) {
 
     this.getAgentCustomers = function (req, res) {
         const agentId = parseInt(req.params.agentId, 10);
-        CustomerService.getAgentCustomers(agentId)
+            return CustomerService.getAgentCustomers(agentId)
             .then(ac => res.json(ac))
             .catch(error => {
                 const responseContent = ResponseService.getErrorResponse(error, res);
@@ -21,7 +21,7 @@ const CustomerController = function (serviceFactory) {
         const requestBody = req.body;
         const agentId = parseInt(req.params.agentId, 10);
 
-        CustomerService.addCustomer(requestBody, agentId)
+        return CustomerService.addCustomer(requestBody, agentId)
             .then(() => {
                 ResponseService.getCreatedResponse(req, requestBody._id, res);
                 res.json(requestBody);
@@ -36,7 +36,7 @@ const CustomerController = function (serviceFactory) {
         const agentId = parseInt(req.params.agentId, 10);
         const customerId = parseInt(req.params.customerId, 10);
 
-        CustomerService.removeCustomer(customerId, agentId)
+        return CustomerService.removeCustomer(customerId, agentId)
             .then(() => res.status(204).end())
             .catch(error => {
                 const responseContent = ResponseService.getServerErrorResponse(res, error);
@@ -49,7 +49,7 @@ const CustomerController = function (serviceFactory) {
         const agentId = parseInt(req.params.agentId, 10);
         const customerId = parseInt(req.params.customerId, 10);
 
-        CustomerService.addOrUpdateCustomer(requestBody, customerId, agentId)
+        return CustomerService.addOrUpdateCustomer(requestBody, customerId, agentId)
             .then(() => res.status(200).end())
             .catch(error => {
                 const responseContent = ResponseService.getErrorResponse(error, res);
@@ -61,7 +61,7 @@ const CustomerController = function (serviceFactory) {
         const agentId = parseInt(req.params.agentId, 10);
         const customerId = parseInt(req.params.customerId, 10);
 
-        CustomerService.getCustomer(customerId, agentId)
+        return CustomerService.getCustomer(customerId, agentId)
             .then(c => res.json(c))
             .catch(error => {
                 const responseContent = ResponseService.getErrorResponse(error, res);

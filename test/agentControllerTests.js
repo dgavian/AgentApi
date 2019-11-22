@@ -81,7 +81,6 @@ describe('Agent controller', function () {
         } catch (e) {
             assert.equal(statusStub.calledWith(500), true);
             assert.equal(errorLogStub.called, true);
-            assert.equal(jsonStub.called, true);
         }
     });
 
@@ -113,7 +112,6 @@ describe('Agent controller', function () {
         } catch (e) {
             assert.equal(statusStub.calledWith(500), true);
             assert.equal(errorLogStub.called, true);
-            assert.equal(jsonStub.called, true);
         }
     });
 
@@ -141,7 +139,6 @@ describe('Agent controller', function () {
         } catch (e) {
             assert.equal(statusStub.calledWith(500), true);
             assert.equal(errorLogStub.called, true);
-            assert.equal(jsonStub.called, true);
         }
     });
 
@@ -173,7 +170,6 @@ describe('Agent controller', function () {
         } catch (e) {
             assert.equal(statusStub.calledWith(500), true);
             assert.equal(errorLogStub.called, true);
-            assert.equal(jsonStub.called, true);
         }
     });
 });

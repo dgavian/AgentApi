@@ -20,7 +20,8 @@ const TestHelpers = function () {
     this.makeFakeRequest = function () {
         return {
             params: {
-                agentId: '42'
+                agentId: '42',
+                customerId: '420'
             }
         };
     };
