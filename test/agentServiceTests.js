@@ -25,6 +25,10 @@ describe('Agent service', function () {
         testData = new TestData();        
     });
 
+    this.afterEach(function () {
+        sinon.restore();
+    });
+
     it('addAgent should throw for invalid agent', async function () {
         const newAgent = testData.makeValidAgent();
         newAgent.name = null;

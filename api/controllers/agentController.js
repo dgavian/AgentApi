@@ -8,7 +8,7 @@ const AgentController = function (serviceFactory) {
         ResponseService = serviceFactory.makeResponseService();
 
     this.getAllAgents = function (req, res) {
-        AgentService.getAllAgents()
+        return AgentService.getAllAgents()
             .then(agents => res.json(agents))
             .catch(error => {
                 const responseContent = ResponseService.getServerErrorResponse(res, error);
@@ -19,7 +19,7 @@ const AgentController = function (serviceFactory) {
     this.addAgent = function (req, res) {
         const requestBody = req.body;
 
-        AgentService.addAgent(requestBody)
+        return AgentService.addAgent(requestBody)
             .then(() => {
                 ResponseService.getCreatedResponse(req, requestBody._id, res);
                 res.json(requestBody);
@@ -32,7 +32,7 @@ const AgentController = function (serviceFactory) {
 
     this.getAgent = function (req, res) {
         const agentId = parseInt(req.params.agentId, 10);
-        AgentService.getAgentById(agentId)
+        return AgentService.getAgentById(agentId)
             .then(a => res.json(a))
             .catch(error => {
                 const responseContent = ResponseService.getErrorResponse(error, res);
@@ -43,7 +43,7 @@ const AgentController = function (serviceFactory) {
     this.addOrUpdateAgent = function (req, res) {
         const requestBody = req.body;
         const agentId = parseInt(req.params.agentId, 10);
-        AgentService.addOrUpdateAgent(agentId, requestBody)
+        return AgentService.addOrUpdateAgent(agentId, requestBody)
             .then(() => res.status(200).end())
             .catch(error => {
                 const responseContent = ResponseService.getErrorResponse(error, res);
