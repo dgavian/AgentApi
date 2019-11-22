@@ -13,13 +13,18 @@ const TestHelpers = function () {
             },
             json: function (item) {
                 return JSON.stringify(item);
+            },
+            end: function () {
+
             }
         };
     };
 
     this.makeFakeRequest = function () {
         return {
-            // TODO: Flesh out as needed.
+            params: {
+                agentId: '42'
+            }
         };
     };
 };

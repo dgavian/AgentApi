@@ -6,6 +6,7 @@ const sinon = require('sinon');
 const Sut = require('../api/controllers/agentController').AgentController;
 const ServiceFactory = require('../service/serviceFactory').ServiceFactory;
 const AgentService = require('../service/agentService').AgentService;
+const ResponseService = require('../service/responseService').ResponseService;
 const TestHelpers = require('./testHelpers').TestHelpers;
 const TestData = require('./agentTestData').AgentTestData;
 
@@ -17,27 +18,35 @@ describe('Agent controller', function () {
 
     let sut,
         factory,
-        factoryStub,
-        service,
+        makeAgentServiceStub,
+        makeResponseServiceStub,
+        agentService,
+        responseService,
         getAllAgentsStub,
         addAgentStub,
         getAgentByIdStub,
         addOrUpdateAgentStub,
         jsonStub,
+        endStub,
+        getCreatedResponseStub,
         req,
         res;
 
     this.beforeEach(function () {
         factory = new ServiceFactory();
-        factoryStub = sinon.stub(factory, 'makeAgentService');
-        service = new AgentService(fakeValidator, fakeRepo);
-        getAllAgentsStub = sinon.stub(service, 'getAllAgents');
-        addAgentStub = sinon.stub(service, 'addAgent');
-        getAgentByIdStub = sinon.stub(service, 'getAgentById');
-        addOrUpdateAgentStub = sinon.stub(service, 'addOrUpdateAgent');
+        makeAgentServiceStub = sinon.stub(factory, 'makeAgentService');
+        makeResponseServiceStub = sinon.stub(factory, 'makeResponseService');
+        agentService = new AgentService(fakeValidator, fakeRepo);
+        responseService = new ResponseService();
+        getAllAgentsStub = sinon.stub(agentService, 'getAllAgents');
+        addAgentStub = sinon.stub(agentService, 'addAgent');
+        getAgentByIdStub = sinon.stub(agentService, 'getAgentById');
+        addOrUpdateAgentStub = sinon.stub(agentService, 'addOrUpdateAgent');
         req = testHelpers.makeFakeRequest();
         res = testHelpers.makeFakeResponse();
         jsonStub = sinon.stub(res, 'json');
+        endStub = sinon.stub(res, 'end');
+        getCreatedResponseStub = sinon.stub(responseService, 'getCreatedResponse');
     });
 
     this.afterEach(function () {
@@ -47,7 +56,8 @@ describe('Agent controller', function () {
     it('getAllAgents with a successful service call should result in expected response', function () {
         const allAgents = makeAllAgents();
         getAllAgentsStub.resolves(allAgents);
-        factoryStub.returns(service);
+        makeAgentServiceStub.returns(agentService);
+        makeResponseServiceStub.returns(responseService);
         sut = new Sut(factory);
 
         sut.getAllAgents(req, res)
@@ -61,12 +71,117 @@ describe('Agent controller', function () {
     });
 
     it('getAllAgents with a failed service call should result in expected error response', function () {
-        const allAgents = makeAllAgents();
         getAllAgentsStub.rejects();
-        factoryStub.returns(service);
+        makeAgentServiceStub.returns(agentService);
+        makeResponseServiceStub.returns(responseService);
         sut = new Sut(factory);
 
         sut.getAllAgents(req, res)
+            .then(() => {
+                assert.fail();
+            })
+            .catch(error => {
+                assert.equal(res.statusCode, 500);
+                assert.equal(jsonStub.called, true);
+            });
+    });
+
+    it('addAgent with a successful service call should result in expected response', function () {
+        addAgentStub.resolves();
+        makeAgentServiceStub.returns(agentService);
+        makeResponseServiceStub.returns(responseService);
+        const newAgent = testData.makeValidAgent();
+        req.body = newAgent;
+        sut = new Sut(factory);
+
+        sut.addAgent(req, res)
+            .then(() => {
+                assert.equal(getCreatedResponseStub.called, true);
+                assert.equal(jsonStub.called, true);
+            })
+            .catch(error => {
+                assert.fail();
+            });
+    });
+
+    it('addAgent with a failed service call should result in expected error response', function () {
+        addAgentStub.rejects();
+        makeAgentServiceStub.returns(agentService);
+        makeResponseServiceStub.returns(responseService);
+        const newAgent = testData.makeValidAgent();
+        req.body = newAgent;
+        sut = new Sut(factory);
+
+        sut.addAgent(req, res)
+            .then(() => {
+                assert.fail();
+            })
+            .catch(error => {
+                assert.equal(res.statusCode, 500);
+                assert.equal(jsonStub.called, true);
+            });
+    });
+
+    it('getAgent with a successful service call should result in expected response', function () {
+        const agent = testData.makeValidAgent();
+        getAgentByIdStub.resolves(agent);
+        makeAgentServiceStub.returns(agentService);
+        makeResponseServiceStub.returns(responseService);
+        sut = new Sut(factory);
+
+        sut.getAgent(req, res)
+            .then(() => {
+                assert.equal(res.statusCode, 200);
+                assert.equal(jsonStub.called, true);
+            })
+            .catch(error => {
+                assert.fail();
+            });
+    });
+
+    it('getAgent with a failed service call should result in expected error response', function () {
+        getAgentByIdStub.rejects();
+        makeAgentServiceStub.returns(agentService);
+        makeResponseServiceStub.returns(responseService);
+        sut = new Sut(factory);
+
+        sut.getAgent(req, res)
+            .then(() => {
+                assert.fail();
+            })
+            .catch(error => {
+                assert.equal(res.statusCode, 500);
+                assert.equal(jsonStub.called, true);
+            });
+    });
+
+    it('addOrUpdateAgent with a successful service call should result in expected response', function () {
+        addOrUpdateAgentStub.resolves();
+        makeAgentServiceStub.returns(agentService);
+        makeResponseServiceStub.returns(responseService);
+        const agent = testData.makeValidAgent();
+        req.body = agent;
+        sut = new Sut(factory);
+
+        sut.addOrUpdateAgent(req, res)
+            .then(() => {
+                assert.equal(jsonStub.called, true);
+                assert.equal(endStub.called, true);
+            })
+            .catch(error => {
+                assert.fail();
+            });
+    });
+
+    it('addOrUpdateAgent with a failed service call should result in expected error response', function () {
+        addOrUpdateAgentStub.rejects();
+        makeAgentServiceStub.returns(agentService);
+        makeResponseServiceStub.returns(responseService);
+        const agent = testData.makeValidAgent();
+        req.body = agent;
+        sut = new Sut(factory);
+
+        sut.addOrUpdateAgent(req, res)
             .then(() => {
                 assert.fail();
             })
