@@ -75,13 +75,10 @@ describe('Agent controller', function () {
         makeResponseServiceStub.returns(responseService);
         sut = new Sut(factory);
 
-        try {
-            await sut.getAllAgents(req, res);
-            assert.fail();
-        } catch (e) {
-            assert.equal(statusStub.calledWith(500), true);
-            assert.equal(errorLogStub.called, true);
-        }
+        await sut.getAllAgents(req, res);
+
+        assert.equal(statusStub.calledWith(500), true);
+        assert.equal(errorLogStub.called, true);
     });
 
     it('addAgent with a successful service call should result in expected response', async function () {
@@ -106,13 +103,10 @@ describe('Agent controller', function () {
         req.body = newAgent;
         sut = new Sut(factory);
 
-        try {
-            await sut.addAgent(req, res)
-            assert.fail();
-        } catch (e) {
-            assert.equal(statusStub.calledWith(500), true);
-            assert.equal(errorLogStub.called, true);
-        }
+        await sut.addAgent(req, res);
+
+        assert.equal(statusStub.calledWith(500), true);
+        assert.equal(errorLogStub.called, true);
     });
 
     it('getAgent with a successful service call should result in expected response', async function () {
@@ -133,13 +127,10 @@ describe('Agent controller', function () {
         makeResponseServiceStub.returns(responseService);
         sut = new Sut(factory);
 
-        try {
-            await sut.getAgent(req, res);
-            assert.fail();
-        } catch (e) {
-            assert.equal(statusStub.calledWith(500), true);
-            assert.equal(errorLogStub.called, true);
-        }
+        await sut.getAgent(req, res);
+
+        assert.equal(statusStub.calledWith(500), true);
+        assert.equal(errorLogStub.called, true);
     });
 
     it('addOrUpdateAgent with a successful service call should result in expected response', async function () {
@@ -165,12 +156,10 @@ describe('Agent controller', function () {
         req.body = agent;
         sut = new Sut(factory);
 
-        try {
-            await sut.addOrUpdateAgent(req, res);
-        } catch (e) {
-            assert.equal(statusStub.calledWith(500), true);
-            assert.equal(errorLogStub.called, true);
-        }
+        await sut.addOrUpdateAgent(req, res);
+
+        assert.equal(statusStub.calledWith(500), true);
+        assert.equal(errorLogStub.called, true);
     });
 });
 
