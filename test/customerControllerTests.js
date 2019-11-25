@@ -78,13 +78,10 @@ describe('Customer controller', function () {
         makeResponseServiceStub.returns(responseService);
         sut = new Sut(factory);
 
-        try {
-            await sut.getAgentCustomers(req, res);
-            assert.fail();
-        } catch (e) {
-            assert.equal(statusStub.calledWith(500), true);
-            assert.equal(errorLogStub.called, true);
-        }
+        await sut.getAgentCustomers(req, res);
+
+        assert.equal(statusStub.calledWith(500), true);
+        assert.equal(errorLogStub.called, true);
     });
 
     it('addCustomer with a successful service call should result in expected response', async function () {
@@ -109,13 +106,10 @@ describe('Customer controller', function () {
         makeResponseServiceStub.returns(responseService);
         sut = new Sut(factory);
 
-        try {
-            await sut.addCustomer(req, res);
-            assert.fail();
-        } catch (e) {
-            assert.equal(statusStub.calledWith(500), true);
-            assert.equal(errorLogStub.called, true);
-        }
+        await sut.addCustomer(req, res);
+
+        assert.equal(statusStub.calledWith(500), true);
+        assert.equal(errorLogStub.called, true);
     });
 
     it('removeCustomer with a successful service call should result in expected response', async function () {
@@ -137,13 +131,10 @@ describe('Customer controller', function () {
         makeResponseServiceStub.returns(responseService);
         sut = new Sut(factory);
 
-        try {
-            await sut.removeCustomer(req, res);
-            assert.fail();
-        } catch (e) {
-            assert.equal(statusStub.calledWith(500), true);
-            assert.equal(errorLogStub.called, true);
-        }
+        await sut.removeCustomer(req, res);
+
+        assert.equal(statusStub.calledWith(500), true);
+        assert.equal(errorLogStub.called, true);
     });
 
     it('addOrUpdateCustomer with a successful service call should result in expected response', async function () {
@@ -169,13 +160,10 @@ describe('Customer controller', function () {
         makeResponseServiceStub.returns(responseService);
         sut = new Sut(factory);
 
-        try {
-            await sut.addOrUpdateCustomer(req, res);
-            assert.fail();
-        } catch (e) {
-            assert.equal(statusStub.calledWith(500), true);
-            assert.equal(errorLogStub.called, true);    
-        }
+        await sut.addOrUpdateCustomer(req, res);
+
+        assert.equal(statusStub.calledWith(500), true);
+        assert.equal(errorLogStub.called, true);
     });
 
     it('getCustomer with a successful service call should result in expected response', async function () {
@@ -196,13 +184,10 @@ describe('Customer controller', function () {
         makeResponseServiceStub.returns(responseService);
         sut = new Sut(factory);
 
-        try {
-            await sut.getCustomer(req, res);
-            assert.fail();
-        } catch (e) {
-            assert.equal(statusStub.calledWith(500), true);
-            assert.equal(errorLogStub.called, true);    
-        }
+        await sut.getCustomer(req, res);
+
+        assert.equal(statusStub.calledWith(500), true);
+        assert.equal(errorLogStub.called, true);
     });
 });
 
