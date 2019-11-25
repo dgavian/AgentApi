@@ -60,134 +60,144 @@ describe('Customer controller', function () {
         sinon.restore();
     });
 
-    it('getAgentCustomers with a successful service call should result in expected response', async function () {
-        const agentCustomers = makeAgentCustomers();
-        getAgentCustomersStub.resolves(agentCustomers);
-        makeCustomerServiceStub.returns(customerService);
-        makeResponseServiceStub.returns(responseService);
-        sut = new Sut(factory);
+    describe('getAgentCustomers', function () {
+        it('with a successful service call should result in expected response', async function () {
+            const agentCustomers = makeAgentCustomers();
+            getAgentCustomersStub.resolves(agentCustomers);
+            makeCustomerServiceStub.returns(customerService);
+            makeResponseServiceStub.returns(responseService);
+            sut = new Sut(factory);
 
-        await sut.getAgentCustomers(req, res);
+            await sut.getAgentCustomers(req, res);
 
-        assert.equal(jsonStub.calledWith(agentCustomers), true);
+            assert.equal(jsonStub.calledWith(agentCustomers), true);
+        });
+
+        it('with a failed service call should result in expected error response', async function () {
+            getAgentCustomersStub.rejects();
+            makeCustomerServiceStub.returns(customerService);
+            makeResponseServiceStub.returns(responseService);
+            sut = new Sut(factory);
+
+            await sut.getAgentCustomers(req, res);
+
+            assert.equal(statusStub.calledWith(500), true);
+            assert.equal(errorLogStub.called, true);
+        });
     });
 
-    it('getAgentCustomers with a failed service call should result in expected error response', async function () {
-        getAgentCustomersStub.rejects();
-        makeCustomerServiceStub.returns(customerService);
-        makeResponseServiceStub.returns(responseService);
-        sut = new Sut(factory);
+    describe('addCustomer', function () {
+        it('with a successful service call should result in expected response', async function () {
+            const newCustomer = testData.makeValidCustomer();
+            req.body = newCustomer;
+            addCustomerStub.resolves();
+            makeCustomerServiceStub.returns(customerService);
+            makeResponseServiceStub.returns(responseService);
+            sut = new Sut(factory);
 
-        await sut.getAgentCustomers(req, res);
+            await sut.addCustomer(req, res);
 
-        assert.equal(statusStub.calledWith(500), true);
-        assert.equal(errorLogStub.called, true);
+            assert.equal(getCreatedResponseStub.called, true);
+            assert.equal(jsonStub.calledWith(newCustomer), true);
+        });
+
+        it('with a failed service call should result in expected error response', async function () {
+            const newCustomer = testData.makeValidCustomer();
+            req.body = newCustomer;
+            addCustomerStub.rejects();
+            makeCustomerServiceStub.returns(customerService);
+            makeResponseServiceStub.returns(responseService);
+            sut = new Sut(factory);
+
+            await sut.addCustomer(req, res);
+
+            assert.equal(statusStub.calledWith(500), true);
+            assert.equal(errorLogStub.called, true);
+        });
     });
 
-    it('addCustomer with a successful service call should result in expected response', async function () {
-        const newCustomer = testData.makeValidCustomer();
-        req.body = newCustomer;
-        addCustomerStub.resolves();
-        makeCustomerServiceStub.returns(customerService);
-        makeResponseServiceStub.returns(responseService);
-        sut = new Sut(factory);
+    describe('removeCustomer', function () {
+        it('with a successful service call should result in expected response', async function () {
+            removeCustomerStub.resolves();
+            makeCustomerServiceStub.returns(customerService);
+            makeResponseServiceStub.returns(responseService);
+            statusStub.returns(res);
+            sut = new Sut(factory);
 
-        await sut.addCustomer(req, res);
+            await sut.removeCustomer(req, res);
 
-        assert.equal(getCreatedResponseStub.called, true);
-        assert.equal(jsonStub.calledWith(newCustomer), true);
+            assert.equal(statusStub.calledWith(204), true);
+            assert.equal(endStub.called, true);
+        });
+
+        it('with a failed service call should result in expected error response', async function () {
+            removeCustomerStub.rejects();
+            makeCustomerServiceStub.returns(customerService);
+            makeResponseServiceStub.returns(responseService);
+            sut = new Sut(factory);
+
+            await sut.removeCustomer(req, res);
+
+            assert.equal(statusStub.calledWith(500), true);
+            assert.equal(errorLogStub.called, true);
+        });
     });
 
-    it('addCustomer with a failed service call should result in expected error response', async function () {
-        const newCustomer = testData.makeValidCustomer();
-        req.body = newCustomer;
-        addCustomerStub.rejects();
-        makeCustomerServiceStub.returns(customerService);
-        makeResponseServiceStub.returns(responseService);
-        sut = new Sut(factory);
+    describe('addOrUpdateCustomer', function () {
+        it('with a successful service call should result in expected response', async function () {
+            const customer = testData.makeValidCustomer();
+            req.body = customer;
+            addOrUpdateCustomerStub.resolves();
+            makeCustomerServiceStub.returns(customerService);
+            makeResponseServiceStub.returns(responseService);
+            statusStub.returns(res);
+            sut = new Sut(factory);
 
-        await sut.addCustomer(req, res);
+            await sut.addOrUpdateCustomer(req, res);
 
-        assert.equal(statusStub.calledWith(500), true);
-        assert.equal(errorLogStub.called, true);
+            assert.equal(statusStub.calledWith(200), true);
+            assert.equal(endStub.called, true);
+        });
+
+        it('with a failed service call should result in expected error response', async function () {
+            const customer = testData.makeValidCustomer();
+            req.body = customer;
+            addOrUpdateCustomerStub.rejects();
+            makeCustomerServiceStub.returns(customerService);
+            makeResponseServiceStub.returns(responseService);
+            sut = new Sut(factory);
+
+            await sut.addOrUpdateCustomer(req, res);
+
+            assert.equal(statusStub.calledWith(500), true);
+            assert.equal(errorLogStub.called, true);
+        });
     });
 
-    it('removeCustomer with a successful service call should result in expected response', async function () {
-        removeCustomerStub.resolves();
-        makeCustomerServiceStub.returns(customerService);
-        makeResponseServiceStub.returns(responseService);
-        statusStub.returns(res);
-        sut = new Sut(factory);
+    describe('getCustomer', function () {
+        it('with a successful service call should result in expected response', async function () {
+            const customer = testData.makeValidCustomer();
+            getCustomerStub.resolves(customer);
+            makeCustomerServiceStub.returns(customerService);
+            makeResponseServiceStub.returns(responseService);
+            sut = new Sut(factory);
 
-        await sut.removeCustomer(req, res);
+            await sut.getCustomer(req, res);
 
-        assert.equal(statusStub.calledWith(204), true);
-        assert.equal(endStub.called, true);
-    });
+            assert.equal(jsonStub.calledWith(customer), true);
+        });
 
-    it('removeCustomer with a failed service call should result in expected error response', async function () {
-        removeCustomerStub.rejects();
-        makeCustomerServiceStub.returns(customerService);
-        makeResponseServiceStub.returns(responseService);
-        sut = new Sut(factory);
+        it('with a failed service call should result in expected error response', async function () {
+            getCustomerStub.rejects();
+            makeCustomerServiceStub.returns(customerService);
+            makeResponseServiceStub.returns(responseService);
+            sut = new Sut(factory);
 
-        await sut.removeCustomer(req, res);
+            await sut.getCustomer(req, res);
 
-        assert.equal(statusStub.calledWith(500), true);
-        assert.equal(errorLogStub.called, true);
-    });
-
-    it('addOrUpdateCustomer with a successful service call should result in expected response', async function () {
-        const customer = testData.makeValidCustomer();
-        req.body = customer;
-        addOrUpdateCustomerStub.resolves();
-        makeCustomerServiceStub.returns(customerService);
-        makeResponseServiceStub.returns(responseService);
-        statusStub.returns(res);
-        sut = new Sut(factory);
-
-        await sut.addOrUpdateCustomer(req, res);
-
-        assert.equal(statusStub.calledWith(200), true);
-        assert.equal(endStub.called, true);
-    });
-
-    it('addOrUpdateCustomer with a failed service call should result in expected error response', async function () {
-        const customer = testData.makeValidCustomer();
-        req.body = customer;
-        addOrUpdateCustomerStub.rejects();
-        makeCustomerServiceStub.returns(customerService);
-        makeResponseServiceStub.returns(responseService);
-        sut = new Sut(factory);
-
-        await sut.addOrUpdateCustomer(req, res);
-
-        assert.equal(statusStub.calledWith(500), true);
-        assert.equal(errorLogStub.called, true);
-    });
-
-    it('getCustomer with a successful service call should result in expected response', async function () {
-        const customer = testData.makeValidCustomer();
-        getCustomerStub.resolves(customer);
-        makeCustomerServiceStub.returns(customerService);
-        makeResponseServiceStub.returns(responseService);
-        sut = new Sut(factory);
-
-        await sut.getCustomer(req, res);
-
-        assert.equal(jsonStub.calledWith(customer), true);
-    });
-
-    it('getCustomer with a failed service call should result in expected error response', async function () {
-        getCustomerStub.rejects();
-        makeCustomerServiceStub.returns(customerService);
-        makeResponseServiceStub.returns(responseService);
-        sut = new Sut(factory);
-
-        await sut.getCustomer(req, res);
-
-        assert.equal(statusStub.calledWith(500), true);
-        assert.equal(errorLogStub.called, true);
+            assert.equal(statusStub.calledWith(500), true);
+            assert.equal(errorLogStub.called, true);
+        });
     });
 });
 

@@ -29,25 +29,27 @@ describe('Agent service', function () {
         sinon.restore();
     });
 
-    it('addAgent should throw for invalid agent', async function () {
-        const newAgent = testData.makeValidAgent();
-        newAgent.name = null;
-        await assert.rejects(() => sut.addAgent(newAgent), { name: 'InvalidResourceError', message: 'Invalid agent' });
-    });
-
-    it('addAgent should throw for existing agent', async function () {
-        const newAgent = testData.makeValidAgent();
-        agentExistsStub.returns(true);
-
-        await assert.rejects(() => sut.addAgent(newAgent), { name: 'ResourceConflictError', message: 'Agent with id 101 already exists' });
-    });
-
-    it('addAgent should succeed for valid agent that does not exist', async function () {
-        const newAgent = testData.makeValidAgent();
-        agentExistsStub.returns(false);
-
-        await assert.doesNotReject(() => sut.addAgent(newAgent));
-        assert.equal(addAgentStub.called, true);
+    describe('addAgent', function () {
+        it('should throw for invalid agent', async function () {
+            const newAgent = testData.makeValidAgent();
+            newAgent.name = null;
+            await assert.rejects(() => sut.addAgent(newAgent), { name: 'InvalidResourceError', message: 'Invalid agent' });
+        });
+    
+        it('should throw for existing agent', async function () {
+            const newAgent = testData.makeValidAgent();
+            agentExistsStub.returns(true);
+    
+            await assert.rejects(() => sut.addAgent(newAgent), { name: 'ResourceConflictError', message: 'Agent with id 101 already exists' });
+        });
+    
+        it('should succeed for valid agent that does not exist', async function () {
+            const newAgent = testData.makeValidAgent();
+            agentExistsStub.returns(false);
+    
+            await assert.doesNotReject(() => sut.addAgent(newAgent));
+            assert.equal(addAgentStub.called, true);
+        });
     });
 
     // TODO: Add tests for other methods containing logic.
