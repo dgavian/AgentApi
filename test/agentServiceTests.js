@@ -33,14 +33,14 @@ describe('Agent service', function () {
         it('should throw for invalid agent', async function () {
             const newAgent = testData.makeValidAgent();
             newAgent.name = null;
-            await assert.rejects(() => sut.addAgent(newAgent), { name: 'InvalidResourceError', message: 'Invalid agent' });
+            await assert.rejects(() => sut.addAgent(newAgent), { name: 'InvalidResourceError' });
         });
     
         it('should throw for existing agent', async function () {
             const newAgent = testData.makeValidAgent();
             agentExistsStub.returns(true);
     
-            await assert.rejects(() => sut.addAgent(newAgent), { name: 'ResourceConflictError', message: 'Agent with id 101 already exists' });
+            await assert.rejects(() => sut.addAgent(newAgent), { name: 'ResourceConflictError' });
         });
     
         it('should succeed for valid agent that does not exist', async function () {
