@@ -17,6 +17,9 @@ describe('Customer service', function () {
         customerRepo,
         agentRepo,
         getAgentCustomersStub,
+        agentExistsStub,
+        customerExistsStub,
+        addCustomerStub,
         testData;
 
     this.beforeEach(function () {
@@ -24,6 +27,9 @@ describe('Customer service', function () {
         agentRepo = new AgentRepo();
         validator = new Validator();
         getAgentCustomersStub = sinon.stub(customerRepo, 'getAgentCustomers');
+        agentExistsStub = sinon.stub(agentRepo, 'agentExists');
+        customerExistsStub = sinon.stub(customerRepo, 'customerExists');
+        addCustomerStub = sinon.stub(customerRepo, 'addCustomer');
         sut = new Sut(validator, customerRepo, agentRepo);
         testData = new TestData();
     });
@@ -45,6 +51,39 @@ describe('Customer service', function () {
             getAgentCustomersStub.resolves(agentCustomers);
 
             await assert.doesNotReject(() => sut.getAgentCustomers(agentId));
+        });
+    });
+
+    describe('addCustomer', function () {
+        it ('should throw for invalid customer', async function () {
+            const newCustomer = null;
+            
+            await assert.rejects(() => sut.addCustomer(newCustomer, agentId), { name: 'InvalidResourceError' });
+        });
+
+        it ('should throw if the agent does not exist', async function () {
+            const newCustomer = testData.makeValidCustomer();
+            agentExistsStub.resolves(false);
+            
+            await assert.rejects(() => sut.addCustomer(newCustomer, agentId), { name: 'UnprocessableError' });
+        });
+
+        it ('should throw if the customer already exists', async function () {
+            const newCustomer = testData.makeValidCustomer();
+            agentExistsStub.resolves(true);
+            customerExistsStub.resolves(true);
+            
+            await assert.rejects(() => sut.addCustomer(newCustomer, agentId), { name: 'ResourceConflictError' });
+        });
+
+        it ('should call add customer if the customer does not exist', async function () {
+            const newCustomer = testData.makeValidCustomer();
+            agentExistsStub.resolves(true);
+            customerExistsStub.resolves(false);
+            
+            await sut.addCustomer(newCustomer, agentId);
+
+            assert.equal(addCustomerStub.called, true);
         });
     });
 });
