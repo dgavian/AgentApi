@@ -183,6 +183,106 @@ describe('Validation service', function () {
             assert.equal(actual, expected);
         });
 
-        // TODO: Test required props, valid id, and first/last name
+        it('should return false for a missing id', function () {
+            const testObj = customerTestData.makeValidCustomer(),
+                expected = false;
+            testObj._id = null;
+
+            const actual = sut.isValidCustomer(testObj, agentId);
+
+            assert.equal(actual, expected);
+        });
+
+        it('should return false for a missing guid', function () {
+            const testObj = customerTestData.makeValidCustomer(),
+                expected = false;
+            testObj.guid = null;
+
+            const actual = sut.isValidCustomer(testObj, agentId);
+
+            assert.equal(actual, expected);
+        });
+
+        it('should return false for a missing isActive flag', function () {
+            const testObj = customerTestData.makeValidCustomer(),
+                expected = false;
+            testObj.isActive = null;
+
+            const actual = sut.isValidCustomer(testObj, agentId);
+
+            assert.equal(actual, expected);
+        });
+
+        it('should return false for a missing name', function () {
+            const testObj = customerTestData.makeValidCustomer(),
+                expected = false;
+            testObj.name = null;
+
+            const actual = sut.isValidCustomer(testObj, agentId);
+
+            assert.equal(actual, expected);
+        });
+
+        it('should return false for a missing company', function () {
+            const testObj = customerTestData.makeValidCustomer(),
+                expected = false;
+            testObj.company = null;
+
+            const actual = sut.isValidCustomer(testObj, agentId);
+
+            assert.equal(actual, expected);
+        });
+
+        it('should return false for a missing email', function () {
+            const testObj = customerTestData.makeValidCustomer(),
+                expected = false;
+            testObj.email = null;
+
+            const actual = sut.isValidCustomer(testObj, agentId);
+
+            assert.equal(actual, expected);
+        });
+
+        it('should return false for a missing phone', function () {
+            const testObj = customerTestData.makeValidCustomer(),
+                expected = false;
+            testObj.phone = null;
+
+            const actual = sut.isValidCustomer(testObj, agentId);
+
+            assert.equal(actual, expected);
+        });
+
+        it('should return false for a missing address', function () {
+            const testObj = customerTestData.makeValidCustomer(),
+                expected = false;
+            testObj.address = null;
+
+            const actual = sut.isValidCustomer(testObj, agentId);
+
+            assert.equal(actual, expected);
+        });
+
+        it('should return false for a missing registered date', function () {
+            const testObj = customerTestData.makeValidCustomer(),
+                expected = false;
+            testObj.registered = null;
+
+            const actual = sut.isValidCustomer(testObj, agentId);
+
+            assert.equal(actual, expected);
+        });
+
+        it('should return false for an invalid id', function () {
+            const testObj = customerTestData.makeValidCustomer(),
+                expected = false;
+            testObj._id = 'Foo';
+
+            const actual = sut.isValidCustomer(testObj, agentId);
+
+            assert.equal(actual, expected);
+        });
+
+        // TODO: Test first/last name
     });
 });
