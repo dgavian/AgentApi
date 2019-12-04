@@ -4,7 +4,7 @@
   "description": "API with agent and customer resources",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "nyc mocha"
   },
   "repository": {
     "type": "git",
@@ -21,5 +21,8 @@
     "express": "^4.17.1",
     "mocha": "^6.2.2",
     "sinon": "^7.5.0"
+  },
+  "devDependencies": {
+    "nyc": "^14.1.1"
   }
 }
