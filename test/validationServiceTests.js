@@ -3,18 +3,22 @@
 const assert = require('assert');
 
 const Sut = require('../service/validationService').ValidationService;
-const TestData = require('./agentTestData').AgentTestData;
+const AgentTestData = require('./agentTestData').AgentTestData;
+const CustomerTestData = require('./customerTestData').CustomerTestData;
 
 describe('Validation service', function () {
-    let sut, testData;
+    let sut, agentTestData, customerTestData;
     this.beforeEach(function () {
         sut = new Sut();
-        testData = new TestData();
     });
 
     describe('isValidAgent', function () {
+        this.beforeEach(function () {
+            agentTestData = new AgentTestData();
+        });
+
         it('should return true for a valid agent', function () {
-            const testObj = testData.makeValidAgent(),
+            const testObj = agentTestData.makeValidAgent(),
                 expected = true,
                 actual = sut.isValidAgent(testObj);
     
@@ -28,9 +32,19 @@ describe('Validation service', function () {
     
             assert.equal(actual, expected);
         });
+
+        it('should return false for an agent with a missing id', function () {
+            const testObj = agentTestData.makeValidAgent(),
+                expected = false;
+            testObj._id = null;
+    
+            const actual = sut.isValidAgent(testObj);
+    
+            assert.equal(actual, expected);
+        });
     
         it('should return false for an agent with a missing name', function () {
-            const testObj = testData.makeValidAgent(),
+            const testObj = agentTestData.makeValidAgent(),
                 expected = false;
             testObj.name = null;
     
@@ -38,11 +52,70 @@ describe('Validation service', function () {
     
             assert.equal(actual, expected);
         });
+
+        it('should return false for an agent with a missing address', function () {
+            const testObj = agentTestData.makeValidAgent(),
+                expected = false;
+            testObj.address = null;
     
-        // TODO: Add tests for other missing/empty properties.
+            const actual = sut.isValidAgent(testObj);
+    
+            assert.equal(actual, expected);
+        });
+
+        
+        it('should return false for an agent with a missing city', function () {
+            const testObj = agentTestData.makeValidAgent(),
+                expected = false;
+            testObj.city = null;
+    
+            const actual = sut.isValidAgent(testObj);
+    
+            assert.equal(actual, expected);
+        });
+
+        it('should return false for an agent with a missing state', function () {
+            const testObj = agentTestData.makeValidAgent(),
+                expected = false;
+            testObj.state = null;
+    
+            const actual = sut.isValidAgent(testObj);
+    
+            assert.equal(actual, expected);
+        });
+
+        it('should return false for an agent with a missing zipCode', function () {
+            const testObj = agentTestData.makeValidAgent(),
+                expected = false;
+            testObj.zipCode = null;
+    
+            const actual = sut.isValidAgent(testObj);
+    
+            assert.equal(actual, expected);
+        });
+
+        it('should return false for an agent with a missing tier', function () {
+            const testObj = agentTestData.makeValidAgent(),
+                expected = false;
+            testObj.tier = null;
+    
+            const actual = sut.isValidAgent(testObj);
+    
+            assert.equal(actual, expected);
+        });
+
+        it('should return false for an agent with a missing phone', function () {
+            const testObj = agentTestData.makeValidAgent(),
+                expected = false;
+            testObj.phone = null;
+    
+            const actual = sut.isValidAgent(testObj);
+    
+            assert.equal(actual, expected);
+        });
     
         it('should return false for an agent with an id that is not an integer', function () {
-            const testObj = testData.makeValidAgent(),
+            const testObj = agentTestData.makeValidAgent(),
                 expected = false;
             testObj._id = 'Foo';
     
@@ -52,7 +125,7 @@ describe('Validation service', function () {
         });
     
         it('should return false for an agent without at least one phone number supplied', function () {
-            const testObj = testData.makeValidAgent(),
+            const testObj = agentTestData.makeValidAgent(),
                 expected = false;
             testObj.phone.primary = null;
             testObj.phone.mobile = null;
@@ -64,5 +137,52 @@ describe('Validation service', function () {
     });
 
 
-    // TODO: Add additional tests for customer validation methods.
+    describe('isValidCustomer', function () {
+        let agentId;
+
+        this.beforeEach(function () {
+            customerTestData = new CustomerTestData();
+            agentId = 42;
+        });
+
+        it('should return true for a valid customer', function () {
+            const testObj = customerTestData.makeValidCustomer(),
+                expected = true;
+
+            const actual = sut.isValidCustomer(testObj, agentId);
+
+            assert.equal(actual, expected);
+        });
+
+        it('should return false for a missing customer', function () {
+            const testObj = null,
+                expected = false;
+
+            const actual = sut.isValidCustomer(testObj, agentId);
+
+            assert.equal(actual, expected);
+        });
+
+        it('should return false for an invalid agent id', function () {
+            const testObj = customerTestData.makeValidCustomer(),
+                expected = false;
+            agentId = 'Foo';
+
+            const actual = sut.isValidCustomer(testObj, agentId);
+
+            assert.equal(actual, expected);
+        });
+
+        it('should return false for a missing agent id', function () {
+            const testObj = customerTestData.makeValidCustomer(),
+                expected = false;
+            agentId = null;
+
+            const actual = sut.isValidCustomer(testObj, agentId);
+
+            assert.equal(actual, expected);
+        });
+
+        // TODO: Test required props, valid id, and first/last name
+    });
 });
