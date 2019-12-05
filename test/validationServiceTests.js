@@ -283,6 +283,24 @@ describe('Validation service', function () {
             assert.equal(actual, expected);
         });
 
-        // TODO: Test first/last name
+        it('should return false for a missing first name', function () {
+            const testObj = customerTestData.makeValidCustomer(),
+                expected = false;
+            testObj.name.first = null;
+
+            const actual = sut.isValidCustomer(testObj, agentId);
+
+            assert.equal(actual, expected);
+        });
+
+        it('should return false for a missing last name', function () {
+            const testObj = customerTestData.makeValidCustomer(),
+                expected = false;
+            testObj.name.last = null;
+
+            const actual = sut.isValidCustomer(testObj, agentId);
+
+            assert.equal(actual, expected);
+        });
     });
 });

@@ -6,7 +6,6 @@ const errors = require('./errors');
 
 const ResponseService = function () {
     this.getErrorResponse = function (err, res) {
-        // TODO: Add unit tests.
         let result = { message: err.message };
 
         if (err instanceof (errors.InvalidResourceError)) {
