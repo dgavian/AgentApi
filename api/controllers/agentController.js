@@ -7,15 +7,17 @@ const serviceFactory = require('../../service/serviceFactory').ServiceFactory,
     AgentService = ServiceFactory.makeAgentService(Validator, AgentRepo),
     ResponseService = ServiceFactory.makeResponseService();
 
-exports.getAllAgents = function (req, res) {
-    AgentService.getAllAgents()
-        .then(agents => res.json(agents))
-        .catch(error => {
-            const responseContent = ResponseService.getServerErrorResponse(res, error);
-            res.json(responseContent);
-        });
+exports.getAllAgents = async function (req, res) {
+    try {
+        const agents = await AgentService.getAllAgents();
+        res.status(200).json(agents);
+    } catch (error) {
+        const responseContent = ResponseService.getServerErrorResponse(res, error);
+        res.json(responseContent);
+    }
 };
 
+// TODO: "Modernize" the rest of these controller methods.
 exports.addAgent = function (req, res) {
     const requestBody = req.body;
     

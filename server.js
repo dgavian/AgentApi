@@ -6,6 +6,7 @@ const express = require('express'),
     routes = require('./api/routes/agentApiRoutes');
 
 app.use(express.json());
+app.use(express.static('public'));
 
 routes(app);
 

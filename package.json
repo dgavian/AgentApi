@@ -4,7 +4,10 @@
   "description": "API with agent and customer resources",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "start": "node ./server.js",
+    "test": "mocha",
+    "lint": "./node_modules/.bin/eslint .",
+    "lintFix": "./node_modules/.bin/eslint . --fix"
   },
   "repository": {
     "type": "git",
@@ -16,9 +19,17 @@
     "url": "https://github.com/dgavian/AgentApi/issues"
   },
   "homepage": "https://github.com/dgavian/AgentApi#readme",
-  "dependencies": {
-    "eslint": "^6.6.0",
+  "dependencies": {    
     "express": "^4.17.1",
+    "vue": "3.4.15"
+  },
+  "devDependencies": {
+    "eslint": "^8.56.0",
+    "eslint-config-defaults": "9.0.0",
+    "eslint-config-standard": "17.1.0",
+    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-import": "2.29.1",
+    "eslint-plugin-promise": "6.1.1",
     "mocha": "^10.2.0",
     "sinon": "^7.5.0"
   }
