@@ -8,16 +8,18 @@ const serviceFactory = require('../../service/serviceFactory').ServiceFactory,
     CustomerService = ServiceFactory.makeCustomerService(Validator, CustomerRepo, AgentRepo),
     ResponseService = ServiceFactory.makeResponseService();
 
-exports.getAgentCustomers = function (req, res) {
-    const agentId = parseInt(req.params.agentId, 10);
-    CustomerService.getAgentCustomers(agentId)
-        .then(ac => res.json(ac))
-        .catch(error => {
-            const responseContent = ResponseService.getErrorResponse(error, res);
-            res.json(responseContent);
-        });
+exports.getAgentCustomers = async function (req, res) {
+    try {
+        const agentId = parseInt(req.params.agentId, 10);
+        const agentCustomers = await CustomerService.getAgentCustomers(agentId);
+        res.json(agentCustomers);
+    } catch (error) {
+        const responseContent = ResponseService.getErrorResponse(error, res);
+        res.json(responseContent);
+    }
 };
 
+// TODO: "Modernize" the rest of these controller methods.
 exports.addCustomer = function (req, res) {
     const requestBody = req.body;
     const agentId = parseInt(req.params.agentId, 10);
@@ -45,7 +47,7 @@ exports.removeCustomer = function (req, res) {
         });
 };
 
-exports.addOrUpdateCustomer = function(req, res) {
+exports.addOrUpdateCustomer = function (req, res) {
     const requestBody = req.body;
     const agentId = parseInt(req.params.agentId, 10);
     const customerId = parseInt(req.params.customerId, 10);
@@ -61,7 +63,7 @@ exports.addOrUpdateCustomer = function(req, res) {
 exports.getCustomer = function (req, res) {
     const agentId = parseInt(req.params.agentId, 10);
     const customerId = parseInt(req.params.customerId, 10);
-    
+
     CustomerService.getCustomer(customerId, agentId)
         .then(c => res.json(c))
         .catch(error => {
